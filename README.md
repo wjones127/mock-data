@@ -27,7 +27,7 @@ d3.js.
 Say you wanted to create a data set of class years and counts of alums. Here is
 how you can do this with this library (this example also uses function from d3):
 
-```
+```javascript
 years = d3.range(1920, 2016);
 counts = d8ta.generate(5000, d3.random(1990, 20))
        .bin(years).data();
