@@ -49,7 +49,7 @@ if (typeof Array.isArray === 'undefined') {
     exports.generate = function (n, func) {
 	// Generates n random samples using func
 	output = [];
-	for (var i = 0; i < n; i++) output.push( func()() );
+	for (var i = 0; i < n; i++) output.push( func() );
 	this.data(output);
 	return this;
     }
@@ -58,6 +58,8 @@ if (typeof Array.isArray === 'undefined') {
 	// Takes an array of bins, and bins the data into them.
 	// Assumes the bins are sorted and there are no repeats.
 	if (data == undefined) data = this.data();
+
+	console.log(data)
 
 	var ascending = bins[0] < bins[1];
 
@@ -68,15 +70,21 @@ if (typeof Array.isArray === 'undefined') {
 
 	var output = new Array(bins.length);
 
+	for (var i = 0; i < output.length; i++) output[i] = 0;
+
+	var binwidth = bins[1] - bins[0];
+
 	for (var i = 0, j = 0; i < data.length; i++) {
 	    if (ascending) {
 		if (data[i] < bins[j]) i++
-		else if (data[i] > bins[j+1]) j++
+		else if (j >= bins.length) break
+		else if (data[i] > bins[j] + binwidth) j++
 		else output[j]++, i++
 	    }
 	    else {
 		if (data[i] > bins[j]) i++
-		else if (data[i] < bins[j+1]) j++
+		else if (j >= bins.length) break
+		else if (data[i] < bins[j] - binwidth) j++
 		else output[j]++, i++
 	    }
 	}
@@ -105,4 +113,9 @@ function testCollect() {
 
 
 
-console.log(d8ta.generate(10, d3.random.normal.bind(this, 4, 3)).data())
+// Create class year data
+years = d3.range(1920, 2016);
+counts = d8ta.generate(5000, d3.random.normal(1990, 20))
+    .bin(years).data();
+result = d8ta.collect({'year': years, 'count': counts});
+console.log(result)
