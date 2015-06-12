@@ -1,17 +1,10 @@
-if (require) var d3 = require('d3'), moment = require('moment');
-
-// only implement if no native implementation is available
-if (typeof Array.isArray === 'undefined') {
-  Array.isArray = function(obj) {
-    return Object.prototype.toString.call(obj) === '[object Array]';
-  }
-};
+//if (require) var d3 = require('d3'), moment = require('moment');
 
 (function(exports) {
 
     function getNextDatum(dict) {
 	var dest = {};
-	for (key in dict) {
+	for (var key in dict) {
 	    if (Array.isArray(dict[key])) dest[key] = dict[key].shift();
 	    else dest[key] = getNextDatum(dict[key]);
 	}
@@ -19,7 +12,7 @@ if (typeof Array.isArray === 'undefined') {
 	}
 
     function getLength(dict) {
-	for (key in dict) {
+	for (var key in dict) {
 	    if (Array.isArray(dict[key])) return dict[key].length;
 	    else getLength(dict[key]);
 	}
@@ -27,7 +20,6 @@ if (typeof Array.isArray === 'undefined') {
 
     exports.collect = function(dataTemplate) {
 	var output = [];
-	console.log(getLength(dataTemplate));
 	for (var i = 0, n = getLength(dataTemplate); i < n; i++)
 	    output.push(getNextDatum(dataTemplate, output));
 	return output;
@@ -54,12 +46,20 @@ if (typeof Array.isArray === 'undefined') {
 	return this;
     }
 
+    exports.aggregate = function () {
+	// Takes the data and makes each observation the sum of itself and the
+	// previous observations
+	var data = this.data();
+	for (var i = 1; i < data.length; i++)
+	    data[i] += data[i-1];
+	this.data(data);
+	return this;
+    }
+
     exports.bin = function(bins, data) {
 	// Takes an array of bins, and bins the data into them.
 	// Assumes the bins are sorted and there are no repeats.
 	if (data == undefined) data = this.data();
-
-	console.log(data)
 
 	var ascending = bins[0] < bins[1];
 
@@ -74,17 +74,17 @@ if (typeof Array.isArray === 'undefined') {
 
 	var binwidth = bins[1] - bins[0];
 
-	for (var i = 0, j = 0; i < data.length; i++) {
+	for (var i = 0, j = 0; i < data.length;) {
 	    if (ascending) {
-		if (data[i] < bins[j]) i++
-		else if (j >= bins.length) break
-		else if (data[i] > bins[j] + binwidth) j++
+		if (j >= bins.length) break
+		else if (data[i] < bins[j]) i++
+		else if (data[i] >= bins[j] + binwidth) j++
 		else output[j]++, i++
 	    }
 	    else {
-		if (data[i] > bins[j]) i++
-		else if (j >= bins.length) break
-		else if (data[i] < bins[j] - binwidth) j++
+		if (j >= bins.length) break
+		else if (data[i] > bins[j]) i++
+		else if (data[i] <= bins[j] + binwidth) j++
 		else output[j]++, i++
 	    }
 	}
@@ -94,42 +94,30 @@ if (typeof Array.isArray === 'undefined') {
 	return this;
     }
 
-    })(d8ta = {});
+    exports.thePast = function (n, time) {
+	// Returns an array of n datetime strings separated by days, months or
+	// years, depending on the time parameter.
+	var times = ['days', 'months', 'years'];
+	var time = times.indexOf(time);
+	if (time === -1) throw new Error('Invalid time type! Please enter' +
+					 ' "days", "months", or "years".');
+	var now = new Date();
 
+	var start = new Date(now);
+	if (time === 0) start.setDate(now.getDate() - n);
+	else if (time === 1) start.setMonth(now.getMonth() - n);
+	else if (time === 2) start.setYear(1900 + now.getYear() - n);
 
+	var result = [];
 
-
-
-function testCollect() {
-    var x, y, z, input, test;
-    x = [1, 3, 45, 20];
-    y = [2, 19, 200, 10];
-    z = ['Hello', 'My', 'Name', 'Is'];
-    input = {'iterations': x,
-	     'data': {'number': y, 'word': z} };
-    test = d8ta.collect(input);
-    return test;
-}
-
-
-function thePast(n, time) {
-    var times = ['days', 'months', 'years'];
-    var time = times.indexOf(time);
-    if (time === -1) throw new Error('Invalid time type!');
-    var now = new Date();
-
-    var start = new Date(now);
-    if (time === 0) start.setDate(now.getDate() - n);
-    else if (time === 1) start.setMonth(now.getMonth() - n);
-    else if (time === 2) start.setYear(1900 + now.getYear() - n);
-
-    var result = [];
-
-    while (start <= now) {
-	result.push(moment(start).format());
-	if (time === 0) start.setDate(start.getDate() + 1);
-	else if (time === 1) start.setMonth(start.getMonth() + 1);
-	else if (time === 2) start.setYear(1900 + start.getYear() + 1);
+	while (start <= now) {
+	    result.push(moment(start).format());
+	    if (time === 0) start.setDate(start.getDate() + 1);
+	    else if (time === 1) start.setMonth(start.getMonth() + 1);
+	    else if (time === 2) start.setYear(1900 + start.getYear() + 1);
+	}
+	return result;
     }
-    return result;
-}
+
+
+    })(d8ta = {});
