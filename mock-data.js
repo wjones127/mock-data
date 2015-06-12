@@ -1,4 +1,4 @@
-var d3 = require('d3'), moment = require('moment');
+if (require) var d3 = require('d3'), moment = require('moment');
 
 // only implement if no native implementation is available
 if (typeof Array.isArray === 'undefined') {
@@ -112,10 +112,24 @@ function testCollect() {
 }
 
 
+function thePast(n, time) {
+    var times = ['days', 'months', 'years'];
+    var time = times.indexOf(time);
+    if (time === -1) throw new Error('Invalid time type!');
+    var now = new Date();
 
-// Create class year data
-years = d3.range(1920, 2016);
-counts = d8ta.generate(5000, d3.random.normal(1990, 20))
-    .bin(years).data();
-result = d8ta.collect({'year': years, 'count': counts});
-console.log(result)
+    var start = new Date(now);
+    if (time === 0) start.setDate(now.getDate() - n);
+    else if (time === 1) start.setMonth(now.getMonth() - n);
+    else if (time === 2) start.setYear(1900 + now.getYear() - n);
+
+    var result = [];
+
+    while (start <= now) {
+	result.push(moment(start).format());
+	if (time === 0) start.setDate(start.getDate() + 1);
+	else if (time === 1) start.setMonth(start.getMonth() + 1);
+	else if (time === 2) start.setYear(1900 + start.getYear() + 1);
+    }
+    return result;
+}

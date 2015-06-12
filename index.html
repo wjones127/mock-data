@@ -6,4 +6,30 @@
 
 </body>
 <script src="mock-data.js"></script>
+<script src="sampling/discrete.js"></script>
+<script src="node_modules/moment/moment.js"></script>
+<script>
+/*******************************************************************************
+                                    EXAMPLES
+*******************************************************************************/
+
+// Create class year data
+classYears = (function() {
+    var years = d3.range(1920, 2016);
+    var dist = SJS.NegBinomial(20, 0.6);
+    var counts = d8ta.generate(5000, dist.draw)
+		     .bin(years).data();
+    var result = d8ta.collect({'year': years, 'count': counts});
+    return result;
+})();
+
+
+// Create growth data
+monthlyGrowth = (function() {
+    var months = [];
+    
+ })();
+
+
+</script>
 </html>
