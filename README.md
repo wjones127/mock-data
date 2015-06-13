@@ -13,7 +13,7 @@ methods from various probability distributions. (Here is one such
 
 ## Methods
 
-__`d8ta.data([data])__: either sets or returns the current data array, depending on
+__`d8ta.data([data])`__: either sets or returns the current data array, depending on
   whether there is an argument supplied. Data set with this can subsequently
   be chained with other methods.
 
