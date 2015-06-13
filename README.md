@@ -1,15 +1,19 @@
 # Mock Data Library
-This library helps create mock data. All functions in a closure that can be
-interfaced through the `d8ta` variable.
+This library provides several useful functions for manipulating data and creating mock
+data in javascript. All functions are in a closure that can be interfaced through the 
+`d8ta` variable.
 
 ## Setup
 
 This library does not depend on, but is much more useful in conjunction with
-d3.js.
+d3.js. It uses but does not provide functions for generating random values, so it
+is best to use this library in conjunction with a library that provides sampling
+methods from various probability distributions. (Here is one such 
+[library](https://github.com/jacobmenick/sampling).)
 
 ## Methods
 
-- `d8ta.data([data])`: either sets or returns the current data array, depending on
+__`d8ta.data([data])__: either sets or returns the current data array, depending on
   whether there is an argument supplied. Data set with this can subsequently
   be chained with other methods.
 
@@ -18,7 +22,7 @@ var x = d8ta.data([1,2,3,4]);
 x.data() // -> [1,2,3,4]
 ```
 
-- `d8ta.generate(n, func)`: generates a sample of size `n` using the supplied
+__`d8ta.generate(n, func)`__: generates a sample of size `n` using the supplied
   function, and saves the data in the object, which can be chained with other
   methods or returned with `.data()`.
 
@@ -27,7 +31,7 @@ var x = d8ta.generate(4, function() { return 28; });
 x.data() // -> [28, 28, 28, 28]
 ```
 
-- `d8ta.bin(bins[, data])`: takes an array of bins and a data set (if one is not
+__`d8ta.bin(bins[, data])`__: takes an array of bins and a data set (if one is not
   already in the chain) and returns an array counting how many points in the
   data set are in each bin. The elements in the bin must be numeric, sorted in
   either ascending or descending order, and equally spaced.
@@ -38,7 +42,7 @@ var data = [1, 2, 3, 4.23, 7, 8, 8.5];
 d8ta.data(data).bin(bins).data() // -> [2, 1, 1]
 ```
 
-- `d8ta.collect`: Converts an object of arrays into an array of objects. For
+__`d8ta.collect`__: Converts an object of arrays into an array of objects. For
   example, given the template `{'x': [1,2,3], 'y': [4,5,6]}` it will output an
   array whose first element is `{'x': 1, 'y': 4}`.
 
@@ -49,7 +53,7 @@ d8ta.collect({'low': x, 'high': y});
 // -> [{'low': 1, 'high': 4}, {'low': 2, 'high': 5}, ...]
 ```
 
-- `d8ta.thePast(n, time)`: given either `'days'`, `'weeks'`, or '`years'`, this
+__`d8ta.thePast(n, time)`__: given either `'days'`, `'weeks'`, or '`years'`, this
   function will return an array of datetime strings for the past n days (or
   months or years).
 
