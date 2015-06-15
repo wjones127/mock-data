@@ -1,3 +1,5 @@
+var d8ta = require('./mock-data.js');
+
 function testCollect() {
     var x, y, z, input, test;
     x = [1, 3, 45, 20];
@@ -36,7 +38,7 @@ function testBin(bins, data, answers) {
 }
 
 function testThePast() {
-    
+
 }
 
 

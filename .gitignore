@@ -2,3 +2,4 @@ node_modules
 package.json
 sampling
 *~
+.DS_Store
