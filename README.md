@@ -1,9 +1,16 @@
-# Mock Data Library
-This library provides several useful functions for manipulating data and creating mock
-data in javascript. All functions are in a closure that can be interfaced through the 
-`d8ta` variable.
+# Will's Data Utilities
+This library provides several useful functions for manipulating data in
+javascript.
 
 ## Setup
+In you project directory, type this into the console
+```npm install wills-data-utils```
+Then you can add the node module as usual:
+```javascript
+var d8ta = require('wills-data-utils');
+```
+All the examples in this readme call the library `d8ta`, but you could name it
+anything else you would like.
 
 This library does not depend on, but is much more useful in conjunction with
 d3.js. It uses but does not provide functions for generating random values, so it
@@ -51,26 +58,27 @@ d8ta.data([{'year': 1920},
 //	   {'year': 1924, 'count': 2}]
 ```
 
-__`d8ta.fill(name, [start, end])`__: takes the name of a variable and fills in
+__`d8ta.fill(name, defaults, [start, end])`__: takes the name of a variable and fills in
 the missing integer values. (Hopefully later values will do that same with
 dates.) There are optional start and end values if you want to fill in below
 and/or above the min and max values. If only supplied two arguments, it will
 figure out whether you meant start or end based on data.
 
 ```javascript
-d8ta.data([{'year': 1999},
-           {'year': 2001},
-		   {'year': 2002}])
-    .fill(year)
+d8ta.data([{'year': 1999, 'count': 1},
+           {'year': 2001, 'count': 23},
+		   {'year': 2002, 'count': 4}])
+    .fill(year, {'count': 0})
 	.data();
-// -> [{'year': 1999},
-//     {'year': 2000},
-//     {'year': 2001},
-//     {'year': 2002}]
+// -> [{'year': 1999, 'count': 1},
+//     {'year': 2000, 'count': 0},
+//     {'year': 2001, 'count': 23},
+//     {'year': 2002, 'count': 4}]
 ```
 
-__`d8ta.cumulative(input, output)`___: adds a variable called `output`
-to data set that gives a cumulative count of the variable `input`.
+__`d8ta.cumulative(input, output, baseline=0)`___: adds a variable called `output`
+to data set that gives a cumulative count of the variable `input`. The optional
+variable baseline gives the number to be added to the first observation.
 
 ```javascript
 d8ta.data({'count': 20},
@@ -135,12 +143,29 @@ d8ta.thePast(12, 'months');
 
 
 ##Examples
-Say you wanted to create a data set of class years and counts of alums. Here is
-how you can do this with this library (this example also uses function from d3):
+Say you had a data set of years and the number of users that joined your website
+in that year, but you have missing observations from years that had zero users
+joining. You want to fill in the missing dates and get the cumulative count and
+percentage growth of users.
 
+Here is what you could do with this library:
 ```javascript
-years = d3.range(1920, 2016);
-counts = d8ta.generate(5000, d3.random.normal(1990, 20))
-       .bin(years).data();
-data = d8ta.collect({'year': years, 'count': counts});
+var data = [{'year': 2010, 'count': 12},
+            {'year': 2011, 'count': 2},
+			{'year': 2013, 'count': 1},
+			{'year': 2014, 'count': 6}];
+data = d8ta.data(data) // Load the data
+           .fill('year', {'count': 0}) // Fill in missing years
+		   .cumulative('count', 'totalCount', 2000) // Get the cumulative growth
+		   .percentGrowth('totalCount', 'percentGrowth', false) // Get % growth
+		   .data() // Return the data set
 ```
+
+First, it loads the data into the `d8ta` object we are working with, so we can
+chain methods. Next, it fills in the missing years, giving the missing years a
+default value of `count` of 0. Next it adds a new variable to the data set called
+`totalCount`, which gives the total count of users. The `2000` gives the number
+of users that were there before we started counting new users. Next the
+percentage growth is calculated for each observation, and saved in the
+`percentageGrowth` property. Finally, the data set is returned as a normal object
+with the `.data()` method.
