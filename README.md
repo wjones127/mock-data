@@ -76,7 +76,7 @@ d8ta.data([{'year': 1999, 'count': 1},
 //     {'year': 2002, 'count': 4}]
 ```
 
-__`d8ta.cumulative(input, output, baseline=0)`___: adds a variable called `output`
+__`d8ta.cumulative(input, output, baseline=0)`__: adds a variable called `output`
 to data set that gives a cumulative count of the variable `input`. The optional
 variable baseline gives the number to be added to the first observation.
 

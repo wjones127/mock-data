@@ -65,3 +65,13 @@ function theSame(array1, array2) {
 	    return false;
     return true;
 }
+
+
+
+dutils = require('./data-utils.js');
+
+fake_data = [{'year': 2001, 'count': 2},
+	     {'year': 2003, 'count': 3},
+	     {'year': 2004, 'count': 1},
+	     {'year': 2007, 'count': 0},
+	     {'year': 2010, 'count': 10}]
