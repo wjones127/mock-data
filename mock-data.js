@@ -23,7 +23,7 @@ exports.collect = function(dataTemplate) {
   return output;
 }
 
-exports.data =(function() {
+exports.data = (function() {
   var data;
   function get_set_data(new_data) {
     // Binds the data to the chain or returns the data
@@ -44,7 +44,7 @@ exports.generate = function (n, func) {
   return this;
 }
 
-exports.aggregate = function () {
+exports.cumulative = function () {
   // Takes the data and makes each observation the sum of itself and the
   // previous observations
   var data = this.data();
@@ -117,26 +117,3 @@ exports.thePast = function (n, time) {
   return result;
 }
 
-exports.fill = function(incompleteData, location, placeholder) {
-  // Using the current dataset, fills in placeholders into
-  placeholder = placeholder || '';
-  // Deduce the structure
-
-  // Create output array
-  var output = this.data();
-  for (var i = 0; i < output.length; i++) {
-    var x = find(incompleteData, location, output[i]);
-    if (x !== -1)
-      output[i] = x;
-    else
-      // put in empty thing
-      }
-  return output;
-
-  function find(array, location, target) {
-    for (var i = 0; i < array.length; i++)
-      if (array[location] === target)
-	return i;
-    return -1;
-  }
-}
