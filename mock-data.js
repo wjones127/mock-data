@@ -117,3 +117,6 @@ exports.thePast = function (n, time) {
   return result;
 }
 
+
+
+window.MockData = exports;

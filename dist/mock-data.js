@@ -119,6 +119,9 @@ exports.thePast = function (n, time) {
 }
 
 
+
+window.MockData = exports;
+
 },{"moment":2}],2:[function(require,module,exports){
 //! moment.js
 //! version : 2.10.3
